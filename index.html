@@ -1010,11 +1010,11 @@ function petSVG(){return `<svg viewBox="0 0 40 76" aria-hidden="true"><defs><lin
       設定（時刻・量・文章など）は「院内アプリ」で変更します。このファイルは書き換え不要です。
    ========================================================= */
 const SETTINGS_URL = 'https://script.google.com/macros/s/AKfycbzXTV9azDiKen8sN-_i34qIzseZAs-qZ1qc2zC9z0LoKDCmLetB0QzaUwVsQks4PfyqYA/exec';
-const APP_VERSION = 'β1.9.16';   // 3つのアプリで1本の通し番号（このファイルは、中身を直したときだけ新しい版になる）
+const APP_VERSION = '1.9.22';   // 3つのアプリで1本の通し番号（このファイルは、中身を直したときだけ新しい版になる）
 
 // 設定の初期値（スプレッドシートに設定がないとき・読み込めないときに使う）
 const DEFAULT_CONFIG = {
-  prototype: true,                 // 試作版の注意書きを出す
+  prototype: false,                // 1.9.22：運用開始。「試作版です」の表示はやめた（設定に残っていても出さない）
   phone: '087-813-7577',           // 困ったときの連絡先
 
   dietDaysBefore: 3,               // 何日前から消化の良い食事にするか
@@ -1863,7 +1863,7 @@ document.addEventListener('input', e => { const t = e.target; if(t && t.dataset 
 
 /* ---------- 検査のあと（検査日の翌日から。β1.6.33） ---------- */
 // β1.6.75：「最初からやり直す」は、試作版（設定の「試作版です」の表示が入っている）のときだけ（β1.6.86：スマホでも出す）
-const pcResetOK = () => !!CONFIG.prototype;   // β1.6.86：iPhone・Androidでも出す（試作版のときだけ。正式版は出ない）
+const pcResetOK = () => false;   // 1.9.22：運用開始。試作版のときだけ出していた「最初からやり直す」は出さない。前は !!CONFIG.prototype   // β1.6.86：iPhone・Androidでも出す（試作版のときだけ。正式版は出ない）
 function endedHTML(){
   const u = parseD(surveyUntil());
   let h = `<div class="panel endbox"><h2>検査おつかれさまでした</h2><p style="margin:0">このアプリでの検査の準備のご案内は終わりました。ご利用ありがとうございました。</p></div>`
@@ -2658,7 +2658,7 @@ setInterval(() => { if(document.visibilityState === 'visible' && shownDay && ymd
   const patientP = /^[A-Z0-9]{3,8}$/.test(qcPre) ? fetchPatient(qcPre) : Promise.resolve(null);
   await loadRemoteConfig();
   const ld = document.getElementById('loading'); if(ld) ld.remove();
-  document.getElementById('proto').classList.toggle('hidden', !CONFIG.prototype);
+  document.getElementById('proto').classList.add('hidden');   // 1.9.22：運用開始。「試作版です」の帯は出さない
   const q = new URLSearchParams(location.search);
   if(DEMO){ document.getElementById('demo').classList.remove('hidden'); }
   if(MARK){   // β1.9.7（β1.9.8：札を隠す・出すボタン、プレビュー版の表示）
