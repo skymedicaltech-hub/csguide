@@ -8,7 +8,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <link rel="manifest" href="tablet.webmanifest">
 <meta name="theme-color" content="#2A8CD8">
-<title>大腸内視鏡検査の説明（看護師用タブレット）Ver2.18.0</title>
+<title>大腸内視鏡検査の説明（看護師用タブレット）Ver2.19.0</title>
 <style>
 :root{
   --navy:#17325C; --navy2:#2B4A7A; --sky1:#4DB0EE; --sky2:#A9DBF8; --sky3:#E6F5FD;
@@ -1074,7 +1074,7 @@ button{touch-action:manipulation}
               <div class="tsub">1杯1杯法の方は 8:00ごろ</div>
               <div class="trow"><span>来院</span><b>検査の30分前</b></div>
             </div></div>
-          <p>検査の時間によって、飲み始めの時間も変わります。看護師が時間をお伝えします。<!-- スマホアプリ再開時は「お渡しするスマホのアプリで確認できます。」に戻す --></p><button class="choose" data-route="home">自宅で飲む方はこちら</button></div>
+          <p>検査の時間によって、飲み始めの時間も変わります。お渡しするスマホのアプリで確認できます。<!-- Ver2.19.0 スマホアプリの運用開始で戻した（止めるときは「看護師が時間をお伝えします。」） --></p><button class="choose" data-route="home">自宅で飲む方はこちら</button></div>
         <div class="pl panel clinic"><div class="plh">院内で飲む方</div>
           <div class="plb"><img class="pimg" src="data:," data-dup="place_clinic" alt="">
             <div class="tt">
@@ -1158,7 +1158,7 @@ button{touch-action:manipulation}
     <!-- ===== スマホアプリ ===== -->
     <section class="screen" id="s-app" data-title="スマホアプリの使い方">
       <div class="split">
-        <div class="illo panel appillo"><div id="phoneIllo"></div><div class="qrcard"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAaEAAAGiAQAAAABmR0TBAAADEElEQVR42u2cS7LbOgxEu6nsg9JKtLVkaV6JhYWInQE/pjN7r8RM0iqX69qXxwMUCgQaICn89+dXwv95TP0bVLA/CVD7cweC3MUdgNrHzzLb0NTjFFWfCwCQpQsI8iwAdQGx6cL3MtvQ1AIqapQDIrXol6sTqodEfC2zDU09TP34/sgSm+IosQlKoADFgTiKbWjq7/mhmO/+ugQxv1O+CdqGppb7YdYUDxNAQYhUQEVCbO3fn2W2oanHqalGBgDqlVptUn3y6nnjZ5ltaOrpeJj159YMAmIu005dvpfZhqaepaCLTbEBpQLUYnmUzGyizWeN9NM2NPU0lW/u3QkjfdzvlZBvnjfPMnmmrGObWlsvxw4AsSlSyTdr9APqq0s6O/JlG5pa4IcUgNiZBSjlN0HE0dNBJbCMYGgbmlqVHwK5Nux6507qieLc7+vfXHR+aOp5P6xel6vvUSotRWweSF29ZqnOCfuhqQVUkNz0IrlNUw21HqF081T7Zh8+aRuaejo/zCVBzCXld5MKQUFpFC+RSuyoWWJ7tw1NrcgPy5dCeM2bMqf8kC2N9L5sagUVW0sLc2lyYoxNueuHkZBvz32ZWlandJl6REKNmmUqn0fMzO6nmFpRp/SphtZYEZkQfT52nz5izMTahqYWxENMKWLbnTXpijU/1CeTdDw09Xi9HEcfwG7lsGofLwvB6qIpX4hUckmg4rANTT3vhwDqADYAEHEUUEGAJaueCFCkMvQc64emFvlhm2dQym/mgtiRhTiai473vtI2NLVGt0n9LF5XC5tKM5osqTmhbs99mVpCjcJE0mv+kdprvttB5lqwtK6fbWjqcd1muqihKdXU1fvLdSAWIyS6v2xqETVd1DCGHM4++hX9/FSdP9xtQ1Pr8sNxUQPaRtwutxFP6arhkf2eB9vQ1KJ6eTxqxwGqohipSohsEuKOqufYhqbW+iHLiIogwNIOpEDBJmjbhqYWUVmf7l5Mv1N34ehrXqPRbBuaepz6vvPwLH3yQWTq19AlBHlKun2fg6kFFH2zq6lHqd+2WRK/DLW5rQAAAABJRU5ErkJggg==" data-n="demo_qr" alt="お試し版のQRコード"><b>お試し版</b><small class="demo-ng">本番では使えません</small></div></div>
+        <div class="illo panel appillo"><div id="phoneIllo"></div><div class="qrcard"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAbwAAAG8AQAAAACNyy1yAAACfElEQVR42u2cUYokMQiGdZj31A3m/seaG6RO4D5ojKleWBgWbIYvNE26Ot+LiPVrTNTkR+P+kB8OQEBAwN8Pao5L5FYR0Sv+9kl812VYFbAFHObD3dI9Vi9RVZuiqrG2LMOqgF3gipauRVVE7Dsc1eZeXZZhVcD3AIdlIK0yAOMAvg/oUTRi6a16ic2ItBgHsBX8DBc9guoUER2mwzQm82UZVgXsAO/I70VEv+xvb/yVcK1lWBWwJa4+tgOsfF5/YlXARvCopro0vVVVU6Z6/SpDK1YF7ADFzGTEJxIrf+KTzLaysupV1olVARt81Z0zvqfYFDOzKenDexcg5/gqYIdeVRG71RWpp//+8JCy95XbBDomVgXsiqv7vT8lxcAj8K6I6guwKmCTr849kbJ1FZJgbu2KrwJ2+mqmVCIPgRouWv5aaharAvZpANkp1RFpS+AtHotVAdtqVqlUd2Ug3/5Vyhq+CtipAapYLU2qq211lpyLuArYB2YPgHdV5SSc03evhp3dVlgVsCm3WvnUM66W59HUKuRWgK169fG6r16aLrpaW/FVwDZfXa64E6vyvBZady0LXwVs7F05w2ztB6h1LTQAYLsG2BF1vsjUcZYF8FXAPg3wjzd+KWFRXwVsBJ/p/zD9sjwVGA3YK8+i1xpQWnsC81SgrSsC7L78hOA+HXCcEMSqgD16te6r7jPXO+uXh3xFAwB2nbnWddQ6zlwPU2+9zgbsFV0NqwK+DRh3WA3LLVe/LygvuMCqgI1x9Rj3FfHTD7bUNoCMvVgVsP3elWFaVYHfvrJdVHRwTyBg8x7ro+wfvYLz3IQ1zgUAdoHKHeyAgICA/xX8A0zjf/nxjSZhAAAAAElFTkSuQmCC" data-n="demo_qr" alt="お試し版のQRコード"><b>お試し版</b><small class="demo-ng">本番では使えません</small></div></div>
         <div class="list panel">
           <div class="it "><div class="when">1</div><div><div class="h">お渡しするQRコードを読む</div><div class="d">自宅で飲む方・院内で飲む方のどちらも使えます。</div></div></div>
           <div class="it "><div class="when">2</div><div><div class="h">ホーム画面に追加する</div><div class="d">「大腸検査準備」という名前で表示されます。</div></div></div>
@@ -1292,7 +1292,7 @@ button{touch-action:manipulation}
 
 <script>
 document.querySelectorAll('img[data-dup]').forEach(i=>{const o=document.querySelector('img[data-n="'+i.dataset.dup+'"]');if(o)i.src=o.src;});
-const VERSION='Ver2.18.0';
+const VERSION='Ver2.19.0';
 const DEF={fs:1.15,method:'2to1',cup:180,chk:0,dinner:'20:00',laxa:'21:00',bp:'7:00',pw:'0000'};
 let S=Object.assign({},DEF);
 try{const s=JSON.parse(localStorage.getItem('csTablet1')||'null');if(s)S=Object.assign(S,s)}catch(e){}
@@ -1332,7 +1332,7 @@ function rotD(dx,dy){return ROT>0?[dy,-dx]:ROT<0?[-dy,dx]:[dx,dy];}
 
 /* 画面遷移 */
 // Ver2.11.0 スマホアプリの運用開始まで「スマホアプリの使い方」のページを出さない（再開するときは true にする）
-const SHOW_APP=false;
+const SHOW_APP=true;
 const ALL=['s-top','s-place','s-food','s-eve','s-morning','s-prep','s-drink','s-stool','s-bring','s-day','s-sed','s-after','s-polyp','s-app','s-end'].filter(id=>SHOW_APP||id!=='s-app');
 let cur='s-top',route=null,busy=false;
 function flow(){return ALL.filter(id=>!(id==='s-prep'&&route==='clinic'));}
