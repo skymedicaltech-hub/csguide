@@ -1015,7 +1015,7 @@ function petSVG(){return `<svg viewBox="0 0 40 76" aria-hidden="true"><defs><lin
       設定（時刻・量・文章など）は「院内アプリ」で変更します。このファイルは書き換え不要です。
    ========================================================= */
 const SETTINGS_URL = 'https://script.google.com/macros/s/AKfycbzXTV9azDiKen8sN-_i34qIzseZAs-qZ1qc2zC9z0LoKDCmLetB0QzaUwVsQks4PfyqYA/exec';
-const APP_VERSION = '1.9.25';   // 3つのアプリで1本の通し番号（このファイルは、中身を直したときだけ新しい版になる）
+const APP_VERSION = '1.9.26';   // 3つのアプリで1本の通し番号（このファイルは、中身を直したときだけ新しい版になる）
 
 // 設定の初期値（スプレッドシートに設定がないとき・読み込めないときに使う）
 const DEFAULT_CONFIG = {
@@ -1361,7 +1361,8 @@ function applySched(sc){
     return !was;
   }
   const wasCancelled = !!S.cancelled; S.cancelled = false;        // 取り消しが元に戻された
-  const time = normTime(sc.time), place = (sc.place === 'home' || sc.place === 'clinic') ? sc.place : S.place;
+  // 1.9.26：院内からの予定に時刻が入っていないとき（カレンダーに時刻が残っていないなど）は、同じ日なら、手元の時刻（QRコードの時刻）を消さずに使う
+  const time = normTime(sc.time) || (sc.date === S.date ? (S.examTime || '') : ''), place = (sc.place === 'home' || sc.place === 'clinic') ? sc.place : S.place;
   const mth = (sc.method && (CONFIG.methods[sc.method] || sc.method === 'standard')) ? sc.method : curMethod();
   const changed = wasCancelled || (!!S.date && (sc.date !== S.date || time !== (S.examTime || '') || place !== S.place || mth !== curMethod()));
   if(sc.date !== S.date || mth !== curMethod()){ RESET_PROGRESS(); }
@@ -2706,6 +2707,7 @@ setInterval(() => { if(document.visibilityState === 'visible' && shownDay && ymd
     // β1.5.2：院内からの予定で飲む場所が未選択のときは、手元のQRコードの飲む場所を使う（まだ選んでいない人だけ）
     if(!S.place && (qp === 'home' || qp === 'clinic')) S.place = qp;
     schedChanged = applySched(sched);
+    if(!S.examTime && qt && qd === S.date && !S.cancelled) S.examTime = qt;   // 1.9.26：時刻が分からなくなっていたら、手元のQRコードの時刻を使う
     // 初めて開いた人でも、手元のQRコードの日付・時間と違えば知らせる
     if(!schedChanged && !S.cancelled && before && S.date && (before.d !== S.date || (before.t && before.t !== S.examTime)) && !S.schedSeen){ schedChanged = true; }
     if(schedChanged) S.schedSeen = S.schedAt;
