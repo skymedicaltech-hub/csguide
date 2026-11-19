@@ -1010,7 +1010,7 @@ function petSVG(){return `<svg viewBox="0 0 40 76" aria-hidden="true"><defs><lin
       設定（時刻・量・文章など）は「院内アプリ」で変更します。このファイルは書き換え不要です。
    ========================================================= */
 const SETTINGS_URL = 'https://script.google.com/macros/s/AKfycbzXTV9azDiKen8sN-_i34qIzseZAs-qZ1qc2zC9z0LoKDCmLetB0QzaUwVsQks4PfyqYA/exec';
-const APP_VERSION = '1.9.22';   // 3つのアプリで1本の通し番号（このファイルは、中身を直したときだけ新しい版になる）
+const APP_VERSION = '1.9.23';   // 3つのアプリで1本の通し番号（このファイルは、中身を直したときだけ新しい版になる）
 
 // 設定の初期値（スプレッドシートに設定がないとき・読み込めないときに使う）
 const DEFAULT_CONFIG = {
@@ -1453,7 +1453,9 @@ const minutesTo = n => { let t = 0; for(let k=1;k<=n;k++) t += intervalFor(k); r
 const toMin = t => { const m = /^(\d{1,2}):(\d{2})$/.exec(String(t || '')); return m ? Number(m[1])*60 + Number(m[2]) : NaN; };
 const fromMin = n => `${Math.floor(n/60)}:${String(((n % 60) + 60) % 60).padStart(2,'0')}`;
 // 自宅で飲む人の来院時刻：検査時間が分かれば「検査の arriveBeforeExam 分前」、分からなければ共通の時刻
-const homeArrive = () => { const e = toMin(S.examTime); return isNaN(e) ? CONFIG.home.arrive : fromMin(e - (Number(CONFIG.arriveBeforeExam) || 30)); };
+// 1.9.23：「0分前」（検査時刻に来院）も使えるようにした。前は 0 が「設定なし」と同じ扱いになり、30分前になっていた
+const arriveBefore = () => { const v = CONFIG.arriveBeforeExam, n = (v === '' || v == null) ? NaN : Number(v); return Number.isFinite(n) && n >= 0 ? n : 30; };
+const homeArrive = () => { const e = toMin(S.examTime); return isNaN(e) ? CONFIG.home.arrive : fromMin(e - arriveBefore()); };
 // 自宅で飲む人の飲み始め（飲み方ごと）。検査時間が分かるときは、来院時刻がずれた分だけ同じようにずらす
 const homeStart = () => {
   const base = (MP() && MP().homeStart) || CONFIG.home.start;
