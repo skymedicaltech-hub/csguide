@@ -128,6 +128,11 @@ details.guide .gbody{padding:0 16px 16px}
 .daytabs button[aria-selected="true"]{background:var(--deep);border-color:var(--deep);color:var(--onDeep);padding:14px 2px 10px;box-shadow:none}
 .daytabs button[aria-selected="true"] b{font-size:min(19px,5vw)}
 .daytabs button[aria-selected="true"] .dd{font-size:30px}
+/* 1.9.24：日付（11/28 など）がタブの枠からはみ出さないように、タブの幅に合わせて文字を小さくする（大きくはしない。前の大きさが上限）。
+   cqw はタブの中の幅に対する割合。cqw が使えない古いスマホは、画面の幅（vw）で小さくする */
+.daytabs button{container-type:inline-size}
+.daytabs button .dd{letter-spacing:-.04em;font-size:min(21px,3.6vw);font-size:min(21px,29cqw)}
+.daytabs button[aria-selected="true"] .dd{font-size:min(30px,6.3vw);font-size:min(30px,29cqw)}
 .daytabs button[aria-selected="true"] small{color:var(--onDeep);opacity:.9;font-size:14px}
 .daytabs button.prevday{background:#E3EEFA;border-color:#9CC0E8;color:#1F4E8C}   /* β1.6.52：検査前日・当日のタブは青系統 */
 .daytabs button.prevday small{color:#1F4E8C}
@@ -1010,7 +1015,7 @@ function petSVG(){return `<svg viewBox="0 0 40 76" aria-hidden="true"><defs><lin
       設定（時刻・量・文章など）は「院内アプリ」で変更します。このファイルは書き換え不要です。
    ========================================================= */
 const SETTINGS_URL = 'https://script.google.com/macros/s/AKfycbzXTV9azDiKen8sN-_i34qIzseZAs-qZ1qc2zC9z0LoKDCmLetB0QzaUwVsQks4PfyqYA/exec';
-const APP_VERSION = '1.9.23';   // 3つのアプリで1本の通し番号（このファイルは、中身を直したときだけ新しい版になる）
+const APP_VERSION = '1.9.24';   // 3つのアプリで1本の通し番号（このファイルは、中身を直したときだけ新しい版になる）
 
 // 設定の初期値（スプレッドシートに設定がないとき・読み込めないときに使う）
 const DEFAULT_CONFIG = {
