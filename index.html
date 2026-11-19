@@ -1015,7 +1015,7 @@ function petSVG(){return `<svg viewBox="0 0 40 76" aria-hidden="true"><defs><lin
       設定（時刻・量・文章など）は「院内アプリ」で変更します。このファイルは書き換え不要です。
    ========================================================= */
 const SETTINGS_URL = 'https://script.google.com/macros/s/AKfycbzXTV9azDiKen8sN-_i34qIzseZAs-qZ1qc2zC9z0LoKDCmLetB0QzaUwVsQks4PfyqYA/exec';
-const APP_VERSION = '1.9.24';   // 3つのアプリで1本の通し番号（このファイルは、中身を直したときだけ新しい版になる）
+const APP_VERSION = '1.9.25';   // 3つのアプリで1本の通し番号（このファイルは、中身を直したときだけ新しい版になる）
 
 // 設定の初期値（スプレッドシートに設定がないとき・読み込めないときに使う）
 const DEFAULT_CONFIG = {
@@ -1504,10 +1504,10 @@ function buildDays(){
     day.push({ id:'e4b', t:'飲む前', title:'モビプレップを作る', go:'vPrep', goLabel:'モビプレップの作り方', img:['moviprep_step1_water','moviprep_step3_shake','moviprep_step4_fill2L'], cls:'prepitem' });
     day.push({ id:'e4c', t:'飲む前', title:'モビプレップの飲み方と注意事項を確認する', gos:[{ go:'vRule', label:'飲み方を見る' }, { go:'vCaution', label:'服用時の注意点を見る' }] });
     day.push({ id:'e5', t:homeStart(), title:'実際にモビプレップを飲み始めましょう', dt:`飲み終わりの目安は ${finishEstimate()} ごろ（追加分まで飲むと ${extraEstimate()} ごろ）`, key:true, big:true, go:'vNav', goLabel:'飲み始める' });
-    day.push({ id:'e6', t:'', wide:true, title:`${homeArrive()}に来院してください`, dt: S.examTime ? `検査は${S.examTime}からです` : '', key:true, img:['visit_clinic'], imgBig:true });
+    day.push({ id:'e6', t:'', wide:true, title:`${homeArrive()}に来院してください`, dt:'', key:true,   /* 1.9.25：「検査は○時からです」は出さない（院長の指示） */ img:['visit_clinic'], imgBig:true });
   }else{   // β1.6.88：院内で飲む人も、飲み方の確認と飲み方ナビが使える
     day.push({ id:'e4c', t:'来院前', title:'モビプレップの飲み方と注意事項を確認する', gos:[{ go:'vRule', label:'飲み方を見る' }, { go:'vCaution', label:'服用時の注意点を見る' }] });
-    day.push({ id:'e6', t:'', wide:true, title:`${CONFIG.clinic.arrive}に来院してください`, dt:'受付をすませて、看護師に声をかけてください' + (S.examTime ? `（検査は${S.examTime}からの予定です）` : ''), key:true, img:['visit_clinic'], imgBig:true });
+    day.push({ id:'e6', t:'', wide:true, title:`${CONFIG.clinic.arrive}に来院してください`, dt:'受付をすませて、看護師に声をかけてください', key:true,   /* 1.9.25：「（検査は○時からの予定です）」は出さない */ img:['visit_clinic'], imgBig:true });
     day.push({ id:'e5', t:startTime(), title:'院内でモビプレップを飲み始めます', dt:`看護師の案内に沿って飲みます。飲み終わりの目安は ${finishEstimate()} ごろ（追加分まで飲むと ${extraEstimate()} ごろ）`, key:true, big:true, go:'vNav', goLabel:'飲み始める' });
   }
   day.push({ id:'e7', t:'持ち物', title:'忘れ物はありませんか', steps:['保険証','お薬手帳','検査説明用紙・同意書・予約票','500mLの水かお茶','汚れたとき用の下着やズボン'], img:['belongings'], imgBig:true });
