@@ -1012,10 +1012,10 @@ function petSVG(){return `<svg viewBox="0 0 40 76" aria-hidden="true"><defs><lin
    スカイ大腸カメラ準備説明アプリ（患者用アプリ）  CSGUIDE
    ---------------------------------------------------------
    ★ 下の SETTINGS_URL に、設定用GASのウェブアプリURLを貼ってください（最初に1回だけ）。
-      設定（時刻・量・文章など）は「院内アプリ」で変更します。このファイルは書き換え不要です。
+      設定（時刻・量・文章など）は「管理アプリ」で変更します。このファイルは書き換え不要です。
    ========================================================= */
 const SETTINGS_URL = 'https://script.google.com/macros/s/AKfycbxjTUk8w01y31N3Gobc_G-l6dJl6O9sD4WQ5M47qpfE5mk8QZBciP36FMhEcFCPUB-v/exec';
-const APP_VERSION = '1.9.27';   // 3つのアプリで1本の通し番号（このファイルは、中身を直したときだけ新しい版になる）
+const APP_VERSION = '1.9.30';   // 3つのアプリで1本の通し番号（このファイルは、中身を直したときだけ新しい版になる）
 
 // 設定の初期値（スプレッドシートに設定がないとき・読み込めないときに使う）
 const DEFAULT_CONFIG = {
@@ -1034,7 +1034,8 @@ const DEFAULT_CONFIG = {
   bpMedBy: '07:00',                // 血圧の薬はこの時刻までに
 
   home:   { start:'09:00', arrive:'12:30' },   // 自宅で飲む人（検査時間がQRコード等で分からないときに使う）
-  arriveBeforeExam: 30,            // 自宅で飲む人：来院は検査の何分前か（検査時間が分かるとき。飲み始めも同じだけずらす）
+  arriveBeforeExam: 30,            // 自宅で飲む人：来院は検査の何分前か（検査時間が分かるとき）
+  homeStartFixed: true,            // 1.9.30：自宅で飲む人の飲み始めを固定する（true＝検査時間でずらさない。false＝来院がずれた分だけずらす）
   clinic: { arrive:'08:50', start:'09:00' },   // 院内で飲む人（β1.6.88：来院8:50・飲み始め9:00ごろ。飲み方ナビも使える）
 
   method: '2-1',                   // 標準の飲み方（QRコードで指定がないとき）
@@ -1055,7 +1056,7 @@ const DEFAULT_CONFIG = {
   slowMin: 15,                     //   その間隔（分）
   intervalMin: 10,                 // それ以降の1杯ごとの間隔（分）
   tooFastMin: 5,                   // 前の1杯からこの時間（分）以内にモビプレップを飲んだら「速すぎる」と警告
-  collect: false,                  // β1.6.99：患者さんの記録（飲んだ杯数・便の記録）を当院へ送るか。false＝送らない（同意の画面も出さない）。院内アプリの「設定」で切り替える。評価版（?eval=1）は、この設定にかかわらず動く
+  collect: false,                  // β1.6.99：患者さんの記録（飲んだ杯数・便の記録）を当院へ送るか。false＝送らない（同意の画面も出さない）。管理アプリの「設定」で切り替える。評価版（?eval=1）は、この設定にかかわらず動く
   clearLevel: 4,                   // この段階以上（④うすい黄・⑤透明）なら終了
   minStools: 5,                    // β1.6.89：必ず飲む分を飲み終えたとき、終了にするのに最低限必要な排便の回数
   okDrinks: ['水（ミネラルウォーターも可）','お茶（煎茶・麦茶・ウーロン茶など）','紅茶（砂糖・ミルクなし）'],
@@ -1071,7 +1072,7 @@ const DEFAULT_CONFIG = {
     '下剤を飲んでいる間に、強いお腹の痛み・吐き気・気分の悪さなどがあるときは、飲むのをやめて当院へご連絡ください（院内では看護師に声をかけてください）。',
     '急に具合が悪くなったとき（息が苦しい・意識がもうろうとするなど）は、ためらわずに救急車（119番）を呼んでください。',
     '分からないことは、当院へお電話でお問い合わせください。'
-  ],   // β1.9.1：アプリを使う前に出す注意事項（院内アプリの「説明の文章」で変更。空にすると出さない）
+  ],   // β1.9.1：アプリを使う前に出す注意事項（管理アプリの「説明の文章」で変更。空にすると出さない）
   halfRule: 'モビプレップを半分（約1L）飲んだところで、まだ一度も便が出ていない場合は、飲むのをいったんやめて当院へ連絡してください。',
   prepWhen: '当日の朝、飲み始める前に作ります。',
   prepSteps: [   // β1.9.6：手順1と2を1つにまとめた（5つの手順。手順ごとに絵 prep_step1〜5 を出す）
@@ -1288,7 +1289,7 @@ if(DEMO_LIMIT){
 const blankState = () => ({ date:'', examTime:'', schedAt:0, cancelled:false, place:'', checks:{}, drinks:[], stools:[], delStools:[], nextAt:0, stopMobi:false, allDone:false, checkDone:false, noStool:false, callAck:false, curDone:false, baseOK:false, baseCall:'', extraCall:false, extraAck:false, lastWaterInProg:false, code:'', method:'', updatedAt:0 });
 let S = blankState();
 function load(){ try{ const v = localStorage.getItem(KEY); if(v) S = Object.assign(S, JSON.parse(v)); }catch(e){} }
-// β1.6.92：評価版（スタッフ評価）では、仮の番号（EV＋5文字。本番の番号は6文字なので重ならない）で記録を院内アプリへ送る。「デモの記録」として別に表示される
+// β1.6.92：評価版（スタッフ評価）では、仮の番号（EV＋5文字。本番の番号は6文字なので重ならない）で記録を管理アプリへ送る。「デモの記録」として別に表示される
 const evCode = () => 'EV' + Array.from({length:5}, () => 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'[Math.floor(Math.random()*32)]).join('');
 function save(){ if(PRACTICE) return;   // β1.6.35：練習のときは保存も送信もしない
   if(EVAL && !/^EV[A-Z0-9]{5}$/.test(S.code || '')) S.code = evCode();
@@ -1349,7 +1350,7 @@ async function fetchPatient(code){
   }catch(e){ return null; }
 }
 
-// 院内（内視鏡カレンダー）で予約が変わったとき：院内アプリがGASに置いた予定を当てはめる
+// 院内（内視鏡カレンダー）で予約が変わったとき：管理アプリがGASに置いた予定を当てはめる
 // 戻り値：変わったかどうか
 const normTime = t => { const m = /^(\d{1,2}):?(\d{2})$/.exec(String(t || '').trim()); return m && Number(m[1]) < 24 && Number(m[2]) < 60 ? `${Number(m[1])}:${m[2]}` : ''; };
 function applySched(sc){
@@ -1465,7 +1466,7 @@ const homeArrive = () => { const e = toMin(S.examTime); return isNaN(e) ? CONFIG
 // 自宅で飲む人の飲み始め（飲み方ごと）。検査時間が分かるときは、来院時刻がずれた分だけ同じようにずらす
 const homeStart = () => {
   const base = (MP() && MP().homeStart) || CONFIG.home.start;
-  if(isNaN(toMin(S.examTime))) return base;
+  if(isNaN(toMin(S.examTime)) || CONFIG.homeStartFixed !== false) return base;   // 1.9.30：固定するとき（初期値）は、検査時間にかかわらず決まった時刻
   return fromMin(toMin(base) + toMin(homeArrive()) - toMin(CONFIG.home.arrive));
 };
 // β1.6.88：飲み始めの時刻（自宅は検査時間で変わる／院内は決まった時刻）
@@ -1733,7 +1734,7 @@ function consentHTML(){
     + `<div class="panel consent">`
     + consentBodyHTML()
     + `<div class="consentbtns"><button type="button" class="btn sub" id="btnSendHow">記録の送り方</button><button type="button" class="btn sub" id="btnHandling">記録の取り扱い</button></div>`   // β1.6.95：長い説明は、ボタンを押すと読めるようにまとめた
-    + (EVAL ? `<p class="demonote">評価版です。「同意する」を選ぶと、押した記録が、院内アプリの「デモの記録」に表示されます（本番の患者さんの記録とは別です。14日たつと自動で消えます）。「同意しない」を選ぶと送られません。</p>`
+    + (EVAL ? `<p class="demonote">評価版です。「同意する」を選ぶと、押した記録が、管理アプリの「デモの記録」に表示されます（本番の患者さんの記録とは別です。14日たつと自動で消えます）。「同意しない」を選ぶと送られません。</p>`
       : DEMO ? `<p class="demonote">お試し版では、どちらを選んでも記録は送られません。</p>` : '')
     + `</div>`
     + (now ? `<p class="muted">${now}</p>` : '')
@@ -2680,7 +2681,7 @@ setInterval(() => { if(document.visibilityState === 'visible' && shownDay && ymd
   }
   if(EVAL){   // β1.6.66：評価版の帯（評価シートへの入口）
     const dm = document.getElementById('demo'); dm.classList.add('evalbar');
-    dm.querySelector('span').innerHTML = '<b>スタッフ評価版</b>です。本番の患者さんの記録とは別です。';   // β1.9.0：評価版は「デモの記録」として院内アプリに届くので、「送られません」をやめた
+    dm.querySelector('span').innerHTML = '<b>スタッフ評価版</b>です。本番の患者さんの記録とは別です。';   // β1.9.0：評価版は「デモの記録」として管理アプリに届くので、「送られません」をやめた
     dm.insertAdjacentHTML('beforeend', '<button type="button" class="evgo" data-go="vEval">評価シート</button>');
     dm.querySelector('#btnDemoReset').textContent = 'やり直す';
   }
