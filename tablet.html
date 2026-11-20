@@ -8,7 +8,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <link rel="manifest" href="tablet.webmanifest">
 <meta name="theme-color" content="#2A8CD8">
-<title>大腸内視鏡検査の説明（看護師用タブレット）Ver2.19.0</title>
+<title>大腸内視鏡検査の説明（看護師用タブレット）Ver3.0.1</title>
 <style>
 :root{
   --navy:#17325C; --navy2:#2B4A7A; --sky1:#4DB0EE; --sky2:#A9DBF8; --sky3:#E6F5FD;
@@ -762,6 +762,29 @@ button{touch-action:manipulation}
 /* Ver2.18.0 1日1回の自動更新のお知らせ */
 #updMsg{position:fixed;left:50%;bottom:8%;transform:translateX(-50%);background:var(--navy);color:#fff;border-radius:999px;padding:16px 36px;font-size:24px;font-weight:700;z-index:14;display:none;box-shadow:0 8px 30px rgba(0,0,0,.3)}
 #updMsg.on{display:block}
+/* Ver3.0.0 院内の管理アプリとつなぐ */
+.land #sheet .lkrow{grid-column:1/-1}
+#sheet .lkr{display:flex;align-items:center;gap:14px;flex:1;justify-content:flex-end;margin-left:20px}
+#sheet .lkr .bkbtns button{white-space:nowrap}
+#sheet .lkrow{white-space:nowrap}
+#sheet .lkrow .lksum{white-space:normal;flex:1}
+#sheet .lksum{font-size:17px;font-weight:700;color:#4F6A92;text-align:right;line-height:1.35}
+#sheet .lksum.ng{color:#D93A33}
+#sheet .lksum.okk{color:#1E8A4C}
+#sheet.linked .row.shr{opacity:.5}
+#sheet.linked .row.shr *{pointer-events:none}
+#sheet.linked .svrow #bSvReset{display:none}
+#sheet .bkbtns button:disabled{opacity:.4}
+#scan{position:fixed;inset:0;background:rgba(10,40,80,.6);display:none;align-items:center;justify-content:center;z-index:12}
+#scan.on{display:flex}
+#scan .box{width:min(640px,92vw);background:#fff;border-radius:28px;padding:22px 28px;color:var(--navy);text-align:center}
+#scan h2{margin:0 0 12px;font-size:26px}
+.scwrap{position:relative;width:100%;aspect-ratio:4/3;background:#0B2242;border-radius:18px;overflow:hidden}
+.scwrap video{width:100%;height:100%;object-fit:cover}
+.scfrm{position:absolute;left:50%;top:50%;width:58%;aspect-ratio:1;transform:translate(-50%,-50%);border:5px solid #FFD54A;border-radius:16px;box-shadow:0 0 0 999px rgba(0,0,0,.25)}
+.scmsg{font-size:19px;font-weight:700;color:#4F6A92;margin:12px 0 4px;line-height:1.45}
+.scmsg.err{color:#D93A33}
+#scan .close{margin-top:10px}
 #tpick{position:fixed;inset:0;background:rgba(10,40,80,.5);display:none;align-items:center;justify-content:center;z-index:13}
 #tpick.on{display:flex}
 #tpick .box{background:#fff;border-radius:28px;padding:20px 30px 22px;color:var(--navy);text-align:center;min-width:440px}
@@ -1251,16 +1274,17 @@ button{touch-action:manipulation}
   <div class="box">
     <h2>設定（スタッフ用）</h2>
     <div class="row">文字の大きさ<div class="seg" id="segFont"><button data-v="1.15">標準</button><button data-v="1.22">大</button><button data-v="1.3">特大</button></div></div>
-    <div class="row">最初に表示する飲み方<div class="seg" id="segMethod"><button data-v="2to1">2杯1杯法</button><button data-v="1to1">1杯1杯法</button></div></div>
-    <div class="row">コップ1杯の量（mL）<input type="number" id="inCup" min="100" max="400" step="10"></div>
-    <div class="row">前日の夕食（○時まで）<input type="text" id="inDinner" data-k="dinner" readonly class="tpin"></div>
-    <div class="row">前日のピコスルファートの時間<input type="text" id="inLaxa" data-k="laxa" readonly class="tpin"></div>
-    <div class="row">当日の血圧の薬（○時まで）<input type="text" id="inBp" data-k="bp" readonly class="tpin"></div>
+    <div class="row shr">最初に表示する飲み方<div class="seg" id="segMethod"><button data-v="2to1">2杯1杯法</button><button data-v="1to1">1杯1杯法</button></div></div>
+    <div class="row shr">コップ1杯の量（mL）<input type="number" id="inCup" min="100" max="400" step="10"></div>
+    <div class="row shr">前日の夕食（○時まで）<input type="text" id="inDinner" data-k="dinner" readonly class="tpin"></div>
+    <div class="row shr">前日のピコスルファートの時間<input type="text" id="inLaxa" data-k="laxa" readonly class="tpin"></div>
+    <div class="row shr">当日の血圧の薬（○時まで）<input type="text" id="inBp" data-k="bp" readonly class="tpin"></div>
     <div class="row">確認用の印（要確認）<div class="seg" id="segChk"><button data-v="1">表示する</button><button data-v="0">表示しない</button></div></div>
     <div class="row">パスワード（数字4けた）<div class="pwchg"><input type="password" id="inPw" inputmode="numeric" maxlength="4" placeholder="新しい番号" autocomplete="off"><button id="bPw">変更</button></div></div>
     <div class="row svrow">アンケートの集計<div style="display:flex;align-items:center"><div class="svsum" id="svSum"></div><button id="bSvReset">リセット</button></div></div>
+    <div class="row lkrow">管理アプリとのつながり<div class="lkr"><div class="lksum" id="lkSum"></div><div class="bkbtns"><button id="bLkScan">QRを読んでつなぐ</button><button id="bLkSync">今すぐ送る</button><button id="bLkOff">つながりを外す</button></div></div></div>
     <div class="row bkrow">設定のバックアップ<div class="bkbtns"><button id="bBkSave">ファイルに保存</button><button id="bBkLoad">ファイルから戻す</button><input type="file" id="inBk" accept=".json,application/json" hidden></div></div>
-    <p class="small">「要確認」の印は、医師の確認が済んでいない内容に付いています。患者さんへ説明するときは「表示しない」にしてください。設定はこのタブレットに保存されます。</p>
+    <p class="small">「要確認」の印は、医師の確認が済んでいない内容に付いています。患者さんへ説明するときは「表示しない」にしてください。設定はこのタブレットに保存されます。院内の管理アプリとつないでいるときは、飲み方・コップの量・3つの時刻は管理アプリで決めたものになり（ここでは変えられません）、アンケートの答えは管理アプリで集計します。</p>
     <p class="small" id="verLine"></p>
     <button class="close" id="bClose">閉じる</button>
   </div>
@@ -1271,6 +1295,12 @@ button{touch-action:manipulation}
   <div class="vcredit">動画提供：EAファーマ株式会社</div>
 </div></div>
 <div id="updMsg" role="status"></div>
+<div id="scan" role="dialog" aria-modal="true" aria-label="QRコードを読む"><div class="box">
+  <h2>管理アプリのQRコードを読む</h2>
+  <div class="scwrap"><video id="scVid" playsinline muted></video><i class="scfrm"></i></div>
+  <p class="scmsg" id="scMsg">院内PCの管理アプリに出したQRコードを、枠の中に写してください。</p>
+  <button class="close" id="scClose">やめる</button>
+</div></div>
 <div id="tpick" role="dialog" aria-modal="true" aria-label="時刻を選ぶ"><div class="box">
   <h2 id="tpTitle">時刻を選ぶ</h2>
   <div class="tpcols">
@@ -1292,7 +1322,7 @@ button{touch-action:manipulation}
 
 <script>
 document.querySelectorAll('img[data-dup]').forEach(i=>{const o=document.querySelector('img[data-n="'+i.dataset.dup+'"]');if(o)i.src=o.src;});
-const VERSION='Ver2.19.0';
+const VERSION='Ver3.0.1';
 const DEF={fs:1.15,method:'2to1',cup:180,chk:0,dinner:'20:00',laxa:'21:00',bp:'7:00',pw:'0000'};
 let S=Object.assign({},DEF);
 try{const s=JSON.parse(localStorage.getItem('csTablet1')||'null');if(s)S=Object.assign(S,s)}catch(e){}
@@ -1531,7 +1561,7 @@ document.querySelectorAll('#pinPad button').forEach(b=>b.onclick=()=>{
   if(pinIn.length>=4)return;
   pinIn+=d;pinShow();
   if(pinIn.length===4){
-    if(pinIn===String(S.pw||DEF.pw)){setTimeout(()=>{pinClose();refresh();svSum();sheet.classList.add('on');},120);}
+    if(pinIn===String(S.pw||DEF.pw)){setTimeout(()=>{pinClose();refresh();svSum();lkShow();sheet.classList.add('on');},120);}
     else{const dt=document.getElementById('pinDots');dt.classList.remove('shake');void dt.offsetWidth;dt.classList.add('shake');pinMsg('パスワードが違います',true);setTimeout(()=>{pinIn='';pinShow();},350);}
   }
 });
@@ -1563,13 +1593,15 @@ vPlay.onclick=e=>{if(e.target===vPlay)vClose();};
 // Ver2.12.0 アンケート：答えはこのタブレットの中に数えて保存（設定画面で集計を見られる）
 const SVK='csTabletSurvey1',SVL={4:'とても分かりやすかった',3:'分かりやすかった',2:'まあまあ',1:'分かりにくかった'};
 function svGet(){try{return Object.assign({1:0,2:0,3:0,4:0},JSON.parse(localStorage.getItem(SVK)||'{}'))}catch(e){return {1:0,2:0,3:0,4:0}}}
-function svSum(){const c=svGet(),n=c[1]+c[2]+c[3]+c[4];document.getElementById('svSum').innerHTML=`とても分かりやすかった ${c[4]}件・分かりやすかった ${c[3]}件・まあまあ ${c[2]}件・分かりにくかった ${c[1]}件（合計 ${n}件）`;}
+function svSum(){if(lkOn()){const q=qGet(),n=q.items.length+(q.pend?q.pend.items.length:0);document.getElementById('svSum').textContent='答えは院内の管理アプリで集計しています（このタブレットでまだ送っていない答え '+n+'件）';return;}
+  const c=svGet(),n=c[1]+c[2]+c[3]+c[4];document.getElementById('svSum').innerHTML=`とても分かりやすかった ${c[4]}件・分かりやすかった ${c[3]}件・まあまあ ${c[2]}件・分かりにくかった ${c[1]}件（合計 ${n}件）`;}
 function svReset(){const sv=document.getElementById('survey');sv.classList.remove('done');sv.querySelectorAll('button').forEach(b=>b.classList.remove('sel'));}
 document.querySelectorAll('#survey .sbtns button').forEach(b=>b.onclick=()=>{
   const sv=document.getElementById('survey');if(sv.classList.contains('done'))return;
-  const c=svGet();c[b.dataset.v]=(c[b.dataset.v]||0)+1;try{localStorage.setItem(SVK,JSON.stringify(c))}catch(e){}
+  if(lkOn()){const q=qGet();q.items.push({d:ymdNow(),v:Number(b.dataset.v)});qSet(q);} // Ver3.0.0 つないでいるときは送るためにためる（日付と答えだけ）
+  else{const c=svGet();c[b.dataset.v]=(c[b.dataset.v]||0)+1;try{localStorage.setItem(SVK,JSON.stringify(c))}catch(e){}}
   b.classList.add('sel');sv.classList.add('done');});
-document.getElementById('bSvReset').onclick=()=>{if(!confirm('アンケートの集計を0に戻しますか？'))return;try{localStorage.removeItem(SVK)}catch(e){}svSum();toast('集計をリセットしました');};
+document.getElementById('bSvReset').onclick=()=>{if(!confirm('アンケートの集計を0に戻しますか？'))return;try{localStorage.removeItem(SVK)}catch(e){}{const l=lkGet();if(l.base){delete l.base;lkSet(l);}}svSum();toast('集計をリセットしました');};
 document.getElementById('bPw').onclick=()=>{const i=document.getElementById('inPw'),v=i.value.trim();
   if(!/^\d{4}$/.test(v)){toast('数字4けたで入れてください');return;}
   S.pw=v;save();i.value='';toast('パスワードを変更しました');};
@@ -1640,7 +1672,7 @@ TP.el.onclick=e=>{if(e.target===TP.el)TP.el.classList.remove('on');};
 // Ver2.17.0 設定のバックアップ（アプリを入れ直すときのため。設定・パスワード・アンケート集計をファイルに保存して戻す）
 document.getElementById('bBkSave').onclick=()=>{
   const d=new Date(),ymd=d.getFullYear()+String(d.getMonth()+1).padStart(2,'0')+String(d.getDate()).padStart(2,'0');
-  const data={app:'csTablet',ver:VERSION,saved:d.toISOString(),settings:S,survey:svGet()};
+  const data={app:'csTablet',ver:VERSION,saved:d.toISOString(),settings:S,survey:svGet(),base:lkGet().base||null,queue:qGet()}; // Ver3.0.0 つながりの合言葉はファイルに入れない（入れ直したらQRを読み直す）
   const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(data,null,1)],{type:'application/json'}));
   a.download='大腸説明タブレット_設定_'+ymd+'.json';document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},2000);
   toast('設定をファイルに保存しました（ダウンロードフォルダ）');};
@@ -1649,6 +1681,9 @@ document.getElementById('inBk').onchange=e=>{const f=e.target.files&&e.target.fi
   r.onload=()=>{try{const d=JSON.parse(r.result);if(d.app!=='csTablet'||!d.settings)throw 0;
       if(!confirm('このファイルの設定に戻しますか？（今の設定は上書きされます）'))return;
       S=Object.assign({},DEF,d.settings);save();if(d.survey)try{localStorage.setItem(SVK,JSON.stringify(d.survey))}catch(_){}
+      if(d.base&&typeof d.base==='object'){const l=lkGet();l.base=d.base;lkSet(l);}
+      if(d.queue&&Array.isArray(d.queue.items)){const q=qGet();const add=d.queue.items.concat(d.queue.pend&&Array.isArray(d.queue.pend.items)?d.queue.pend.items:[]).filter(x=>x&&/^\d{4}-\d{2}-\d{2}$/.test(x.d)&&[1,2,3,4].includes(Number(x.v)));q.items=q.items.concat(add.map(x=>({d:x.d,v:Number(x.v)})));qSet(q);}
+      lkShow();
       refresh();svSum();toast('設定を戻しました');}catch(_){toast('このファイルは読み込めません');}
     e.target.value='';};r.readAsText(f);};
 function phoneSVG(){return `<svg viewBox="0 0 260 470" style="height:94%;max-height:470px" aria-hidden="true">
@@ -1679,6 +1714,94 @@ document.getElementById('phoneIllo').innerHTML=phoneSVG();
 document.getElementById('menuCups').innerHTML=cupSVG('mp')+cupSVG('mp')+cupSVG('wt');
 document.getElementById('topVer').textContent=VERSION;
 document.getElementById('verLine').textContent='大腸内視鏡検査の説明（看護師用タブレット） '+VERSION;
+/* Ver3.0.0 院内の管理アプリ（タブレット専用GAS）とつなぐ
+   ・送るのは アンケートの答え（日付と4段階のどれか）・このタブレットの名前 だけ。時刻・患者さんのことは送らない
+   ・受け取るのは 全部のタブレットで使う設定（飲み方・コップ1杯の量・3つの時刻）
+   ・つなぐ合言葉は、管理アプリが出すQRコードで受け取り、このタブレットの中だけに保存する（ファイル・画面には出さない） */
+var LKK='csTabletLink1',LQK='csTabletQueue1';
+function lkGet(){try{return JSON.parse(localStorage.getItem(LKK))||{}}catch(e){return{}}}
+function lkSet(o){try{localStorage.setItem(LKK,JSON.stringify(o))}catch(e){}}
+function lkOn(){const l=lkGet();return !!(l.u&&l.k);}
+function qGet(){let q;try{q=JSON.parse(localStorage.getItem(LQK))}catch(e){}q=q&&typeof q==='object'?q:{};if(!Array.isArray(q.items))q.items=[];if(!q.pend||!Array.isArray(q.pend.items))q.pend=null;return q;}
+function qSet(q){try{localStorage.setItem(LQK,JSON.stringify(q))}catch(e){}}
+function ymdNow(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function lkRid(){const a=new Uint8Array(12);crypto.getRandomValues(a);return Array.from(a,x=>x.toString(16).padStart(2,'0')).join('');}
+function lkParse(txt){ // 管理アプリのQR（…tablet.html#link=GASの番号.合言葉.名前）を読む
+  try{txt=String(txt||'').trim();const m=/(?:^|#link=)([A-Za-z0-9_-]{20,120})\.([A-Za-z0-9]{20,40})\.([^.#\s]*)$/.exec(txt);if(!m)return null;
+    const n=decodeURIComponent(m[3]).replace(/[\u0000-\u001f<>]/g,'').trim().slice(0,12);
+    return {u:'https://script.google.com/macros/s/'+m[1]+'/exec',k:m[2],n:n||'未設定'};}catch(e){return null;}}
+function lkApply(o){const l=lkGet();const nl={u:o.u,k:o.k,n:o.n,base:l.base,mig:l.mig};lkSet(nl);lkShow();svSum();toast('院内の管理アプリとつなぎました（'+o.n+'）');setTimeout(()=>lkSync(true),300);}
+function lkFix(){ // つないでいる間は、共有の設定を変えられないようにする
+  sheet.classList.toggle('linked',lkOn());}
+function lkShow(){const l=lkGet(),el=document.getElementById('lkSum');if(!el)return;lkFix();
+  const q=qGet(),n=q.items.length+(q.pend?q.pend.items.length:0);
+  const hm=t=>{const d=new Date(t);return (d.getMonth()+1)+'/'+d.getDate()+' '+d.getHours()+':'+String(d.getMinutes()).padStart(2,'0')};
+  let t,c='';
+  if(!l.u||!l.k){t='つないでいません（アンケートはこのタブレットの中で数えます）';}
+  else if(l.bad){t='「'+l.n+'」：合言葉が変わりました。管理アプリのQRを読み直してください（未送信 '+n+'件）';c='ng';}
+  else{t='「'+l.n+'」としてつないでいます'+(l.last?'。最後に送った：'+hm(l.last):'')+(n?'（未送信 '+n+'件）':'')+(l.err&&(!l.last||l.err>l.last)?'。ネットにつながらず送れませんでした（あとでもう一度送ります）':'');c=l.err&&(!l.last||l.err>l.last)?'ng':'okk';}
+  el.textContent=t;el.className='lksum '+c;
+  document.getElementById('bLkSync').disabled=!(l.u&&l.k);document.getElementById('bLkOff').disabled=!(l.u&&l.k);}
+function lkSetShared(set){ // 管理アプリで決めた設定を、このタブレットの設定に入れる
+  if(!set||typeof set!=='object')return;let ch=false;
+  if(set.method==='2to1'||set.method==='1to1'){if(S.method!==set.method){S.method=set.method;ch=true;}}
+  const cup=Number(set.cup);if(cup>=100&&cup<=400&&S.cup!==cup){S.cup=cup;ch=true;}
+  ['dinner','laxa','bp'].forEach(k=>{const v=String(set[k]||'');if(/^\d{1,2}:\d{2}$/.test(v)&&S[k]!==v){S[k]=v;ch=true;}});
+  if(ch){save();refresh();}}
+async function lkSync(force){
+  const l=lkGet();if(!l.u||!l.k||lkSync.busy)return;
+  const q=qGet();
+  // 前の版でタブレットの中に数えていた答え（まだ送っていない分）
+  const c=svGet(),b=l.base||{},mc={};let mn=0;[1,2,3,4].forEach(v=>{mc[v]=Math.max(0,(c[v]||0)-(b[v]||0));mn+=mc[v];});
+  if(!q.pend&&(q.items.length||mn)){q.pend={id:lkRid(),items:q.items.slice(0,300)};if(mn){q.pend.mig=mc;q.pend.base={1:c[1]||0,2:c[2]||0,3:c[3]||0,4:c[4]||0};}q.items=q.items.slice(300);qSet(q);}
+  if(!q.pend&&!force&&l.last&&Date.now()-l.last<30*60000)return;
+  lkSync.busy=true;
+  try{
+    const body={a:'tab',k:l.k,n:l.n,ver:VERSION};
+    if(q.pend){body.id=q.pend.id;body.items=q.pend.items;if(q.pend.mig)body.mig={c:q.pend.mig};}
+    const ctl=new AbortController(),tm=setTimeout(()=>ctl.abort(),20000);
+    const r=await fetch(l.u,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(body),signal:ctl.signal,cache:'no-store',redirect:'follow'});clearTimeout(tm);
+    const j=await r.json();const L=lkGet();
+    if(j&&j.ok){
+      const Q=qGet();if(Q.pend&&q.pend&&Q.pend.id===q.pend.id){if(Q.pend.base)L.base=Q.pend.base;Q.pend=null;qSet(Q);}
+      L.last=Date.now();delete L.bad;delete L.err;lkSet(L);lkSetShared(j.set);
+    }else if(j&&j.err==='key'){L.bad=1;lkSet(L);}
+    else{L.err=Date.now();lkSet(L);}
+  }catch(e){const L=lkGet();L.err=Date.now();lkSet(L);}
+  finally{lkSync.busy=false;lkShow();svSum();}
+}
+// QRを読んでつなぐ（タブレットのカメラ。Androidの Chrome の読み取り機能を使う）
+const scan={el:document.getElementById('scan'),vid:document.getElementById('scVid'),msg:document.getElementById('scMsg'),st:null,tm:0};
+function scStop(){scan.el.classList.remove('on');clearTimeout(scan.tm);if(scan.st){scan.st.getTracks().forEach(t=>t.stop());scan.st=null;}scan.vid.srcObject=null;}
+async function scStart(){
+  const say=(t,e)=>{scan.msg.textContent=t;scan.msg.className='scmsg'+(e?' err':'');};
+  scan.el.classList.add('on');say('院内PCの管理アプリに出したQRコードを、枠の中に写してください。');
+  if(!('BarcodeDetector' in window)||!navigator.mediaDevices){say('このタブレットでは、ここからQRを読めません。タブレットのカメラアプリで同じQRを読むと、つながります。',1);return;}
+  let det;try{det=new BarcodeDetector({formats:['qr_code']});}catch(e){say('このタブレットでは、ここからQRを読めません。タブレットのカメラアプリで同じQRを読むと、つながります。',1);return;}
+  try{scan.st=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'},audio:false});}catch(e){say('カメラを使えませんでした。カメラの使用を「許可」にしてから、もう一度押してください。',1);return;}
+  if(!scan.el.classList.contains('on')){scStop();return;}
+  scan.vid.srcObject=scan.st;try{await scan.vid.play();}catch(e){}
+  const loop=async()=>{if(!scan.el.classList.contains('on'))return;
+    try{const r=await det.detect(scan.vid);for(const x of r){const o=lkParse(x.rawValue);
+      if(o){scStop();lkApply(o);return;}else if(x.rawValue)say('このQRコードではつなげません。管理アプリの「タブレットをつなぐQR」を写してください。',1);}}catch(e){}
+    scan.tm=setTimeout(loop,250);};
+  loop();}
+document.getElementById('bLkScan').onclick=scStart;
+document.getElementById('scClose').onclick=scStop;
+document.getElementById('bLkSync').onclick=()=>{toast('送っています…');lkSync(true);};
+document.getElementById('bLkOff').onclick=()=>{if(!confirm('院内の管理アプリとのつながりを外しますか？（まだ送っていない答えは、このタブレットに残ります）'))return;
+  const l=lkGet();lkSet({base:l.base});lkShow();svSum();toast('つながりを外しました');};
+// タブレットのカメラアプリでQRを読んで開いたとき（…tablet.html#link=○○）
+if(/^#link=/.test(location.hash)){const o=lkParse(location.hash);try{history.replaceState(null,'',location.pathname+location.search);}catch(e){}
+  if(o)lkApply(o);else setTimeout(()=>toast('このQRコードではつなげません'),500);}
+lkShow();
+// 送る時：開いたとき・表紙で1分さわられていないとき（答えがたまっている／30分たった）
+(function(){let lt=Date.now();['pointerdown','keydown'].forEach(ev=>addEventListener(ev,()=>{lt=Date.now()},true));
+  const quiet=()=>cur==='s-top'&&document.visibilityState==='visible'&&Date.now()-lt>60000&&
+    !['toc','sheet','pin','vplay','tpick','scan'].some(id=>{const e=document.getElementById(id);return e&&e.classList.contains('on')});
+  setTimeout(()=>{if(lkOn()&&cur==='s-top')lkSync(true)},3000);
+  setInterval(()=>{if(lkOn()&&quiet())lkSync(false)},60000);
+  window.__lkQuiet=quiet;})();
 /* Ver2.18.0 1日1回、GitHub Pagesに新しい版がないか確かめる（アプリを開いたまま・ピン止めのままで更新） */
 (function(){
   const KEY='csTabletUpd1';
@@ -1695,7 +1818,7 @@ document.getElementById('verLine').textContent='大腸内視鏡検査の説明�
   let lastTouch=Date.now(),busyChk=false;
   ['pointerdown','keydown'].forEach(ev=>addEventListener(ev,()=>{lastTouch=Date.now()},true));
   const quiet=()=>cur==='s-top'&&document.visibilityState==='visible'&&Date.now()-lastTouch>60000&&
-    !['toc','sheet','pin','vplay','tpick'].some(id=>{const e=document.getElementById(id);return e&&e.classList.contains('on')});
+    !['toc','sheet','pin','vplay','tpick','scan'].some(id=>{const e=document.getElementById(id);return e&&e.classList.contains('on')});
   async function check(){
     const u=ld();
     if(busyChk||u.day===today()||(u.fail&&Date.now()-u.fail<30*60000)||!quiet())return;
