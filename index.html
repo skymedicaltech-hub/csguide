@@ -517,27 +517,6 @@ p{margin:0 0 10px}
 .themesel button + button{border-left:1.5px solid var(--line)}
 .themesel button[aria-pressed="true"]{background:var(--deep);color:var(--onDeep);font-weight:700}
 
-/* β1.6.66：スタッフ評価版 */
-.demo.evalbar{background:#E4EEFB;border-bottom:2px solid #6E9BD6}
-.demo.evalbar > span{flex:1}
-.demo.evalbar button{border:1.5px solid #8FB1DD;border-radius:var(--r-s);background:var(--surface);color:var(--deep);font-weight:700}
-.demo .evgo{background:var(--deep) !important;color:var(--onDeep) !important;border-color:var(--deep) !important}
-:root[data-theme="dark"] .demo.evalbar{background:#1A2C4E;color:var(--ink);border-color:#3D6EA6}
-@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .demo.evalbar{background:#1A2C4E;color:var(--ink);border-color:#3D6EA6} }
-.evbig{margin-top:22px}
-.ev .evq{font-weight:700;font-size:17px;line-height:1.45;margin-bottom:8px}
-.ev .evq small{display:block;font-weight:400;font-size:14px;color:var(--sub);margin-top:2px}
-.ev .evs{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
-.ev .evs button, .ev .evna, .ev .evr button{border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:var(--r-s);font-family:var(--fnum);font-size:20px;font-weight:600;padding:8px 0}
-.ev .evs button[aria-pressed="true"], .ev .evr button[aria-pressed="true"], .ev .evna[aria-pressed="true"]{background:var(--deep);border-color:var(--deep);color:var(--onDeep)}
-.ev .evl{display:flex;justify-content:space-between;font-size:13px;color:var(--sub);margin-top:4px}
-.ev .evna{display:block;margin:8px 0 0 auto;font-family:inherit;font-size:14px;font-weight:400;padding:4px 12px}
-.ev .evr{display:grid;grid-template-columns:repeat(2,1fr);gap:6px}
-.ev .evr button{font-family:inherit;font-size:16px;font-weight:700;padding:10px 4px}
-.ev textarea{width:100%;min-height:96px;font:inherit;font-size:16px;line-height:1.6;padding:10px;border:1.5px solid var(--line);border-radius:var(--r-s);background:var(--surface);color:var(--ink);resize:vertical}
-.ev .evsec{font-size:15px;font-weight:700;color:var(--deep);letter-spacing:.06em;margin:22px 2px 8px}
-.ev .evmsg{color:var(--ng);font-weight:700}
-#btnEvalSend:disabled{opacity:.5}
 
 /* β1.6.57：ホーム画面に追加の案内 */
 .a2hs{display:grid;grid-template-columns:52px 1fr;gap:10px 12px;align-items:center;background:var(--sky);border:0;border-radius:var(--r-l);padding:12px;margin:0 0 14px}   /* β1.6.63：枠を外し、うすい青の地で控えめに */
@@ -855,9 +834,6 @@ main > section > h2{color:#fff;text-shadow:0 2px 0 rgba(10,60,120,.35),0 0 10px 
 .bigbtn:active .bhint span{box-shadow:0 1px 0 #0E4C8C;transform:translateY(3px);animation:none}
 .bigbtn{margin-bottom:22px}
 .cupnew .src img.wbottle{width:auto;max-width:100%;height:150px}
-.evsec{display:inline-block;background:rgba(255,255,255,.92);color:#1561B0;border-radius:999px;padding:4px 14px;box-shadow:0 3px 0 rgba(30,100,180,.18)}
-:root[data-theme="dark"] .evsec{background:rgba(19,35,63,.92);color:#CFE4FA}
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .evsec{background:rgba(19,35,63,.92);color:#CFE4FA}}
 /* β1.9.5：お試し版（?demo=1）の使用期限（1時間） */
 .demoleft{font-size:12px;font-weight:700;white-space:nowrap}
 body.demo-ended > *:not(#sky):not(#hills):not(header):not(.demoend){display:none !important}
@@ -937,7 +913,6 @@ body.mk-off #mkLayer .mk{display:none}
   <section id="vNotice" class="hidden"></section>
   <section id="vSurvey" class="hidden"></section>
   <section id="vEnded" class="hidden"></section>
-  <section id="vEval" class="hidden"></section>
 </main>
 
 <script>
@@ -1009,7 +984,7 @@ function petSVG(){return `<svg viewBox="0 0 40 76" aria-hidden="true"><defs><lin
       設定（時刻・量・文章など）は「管理アプリ」で変更します。このファイルは書き換え不要です。
    ========================================================= */
 const SETTINGS_URL = 'https://script.google.com/macros/s/AKfycbxjTUk8w01y31N3Gobc_G-l6dJl6O9sD4WQ5M47qpfE5mk8QZBciP36FMhEcFCPUB-v/exec';
-const APP_VERSION = '1.9.37';   // 3つのアプリで1本の通し番号（このファイルは、中身を直したときだけ新しい版になる）
+const APP_VERSION = '1.9.38';   // 3つのアプリで1本の通し番号（このファイルは、中身を直したときだけ新しい版になる）
 
 // 設定の初期値（スプレッドシートに設定がないとき・読み込めないときに使う）
 const DEFAULT_CONFIG = {
@@ -1145,17 +1120,15 @@ async function loadRemoteConfig(){
 
 /* ---------- 保存（この端末の中だけ） ---------- */
 // お試し版（院内で説明するとき、患者さん自身のスマホで触ってもらう）：本番とは別の場所に保存し、病院へは送らない
-// β1.6.66：スタッフ評価版（?eval=1）。お試し版と同じく記録は送らず、評価シートだけを送る
-const EVAL = new URLSearchParams(location.search).get('eval') === '1';
 const PREVIEW = false;   // β1.9.8：claude.ai のプレビュー版だけ true にする（GitHubに置く index.html は必ず false）。true のときは「場所の番号」モードで開く
 const MARK = PREVIEW || new URLSearchParams(location.search).get('mark') === '1';   // β1.9.7：院長用「場所の番号」モード（お試し版として動き、病院へは送らない）
-const DEMO = EVAL || MARK || new URLSearchParams(location.search).get('demo') === '1';
-const KEY = EVAL ? 'csguide_eval_v1' : MARK ? 'csguide_mark_v1' : DEMO ? 'csguide_demo_v1' : 'csguide_state_v1';
+const DEMO = MARK || new URLSearchParams(location.search).get('demo') === '1' || new URLSearchParams(location.search).get('eval') === '1';   // 1.9.38：評価版はなくした。前の評価版のQR（?eval=1）で開いたときは、お試し版として開く
+const KEY = MARK ? 'csguide_mark_v1' : DEMO ? 'csguide_demo_v1' : 'csguide_state_v1';
 // β1.9.5：お試し版（?demo=1）は、そのスマホで初めて開いてから1時間だけ使える
 //   ・初めて開いた時刻は、本番の記録とは別の場所（csguide_demo_started）に保存する
 //   ・「最初からやり直す」・QRコードの読み直し・再読み込みでは、時間は延びない
-//   ・評価版（?eval=1）と本番（?demo=1 なし）は対象外。本番ではこの仕組みは一切動かない
-const DEMO_LIMIT = DEMO && !EVAL && !MARK;   // β1.9.7：院長用の「場所の番号」モードも対象外
+//   ・本番（?demo=1 なし）は対象外。本番ではこの仕組みは一切動かない
+const DEMO_LIMIT = DEMO && !MARK;   // β1.9.7：院長用の「場所の番号」モードも対象外
 const DEMO_LIMIT_MS = 60 * 60 * 1000;
 const DEMO_START_KEY = 'csguide_demo_started';
 let demoStartAt = 0, demoEndShown = false;
@@ -1190,7 +1163,7 @@ function demoEnd(){   // ボタンは出さない（本番用のQRコードを�
    ・札は画面の上に重ねて出すだけで、画面の作りや動きは変えない。本番・ふつうのお試し版では、この仕組みは一切動かない
    ・予定の行は「前日-d2」のように行ごとの記号（行を足したり、時刻を変えたりしても変わらない。紫の札）
    ・それ以外は「作り方-3」のように、その画面の上からの通し番号（赤の札）。閉じている部分も数に入れるので、開け閉めしても番号は変わらない */
-const MK_NAME = { vSetup:'はじめに', vSchedule:'予定', vFood:'食事', vNav:'ナビ', vAfter:'検査後', vPrep:'作り方', vRule:'きまり', vCaution:'注意点', vCancel:'取消', vBefore:'前日まで', vNotice:'注意事項', vSurvey:'アンケート', vEnded:'終了', vEval:'評価' };
+const MK_NAME = { vSetup:'はじめに', vSchedule:'予定', vFood:'食事', vNav:'ナビ', vAfter:'検査後', vPrep:'作り方', vRule:'きまり', vCaution:'注意点', vCancel:'取消', vBefore:'前日まで', vNotice:'注意事項', vSurvey:'アンケート', vEnded:'終了' };
 let mkTimer = 0;
 function mkPrefix(){
   if(current === 'vSchedule'){
@@ -1283,10 +1256,7 @@ if(DEMO_LIMIT){
 const blankState = () => ({ date:'', examTime:'', schedAt:0, cancelled:false, place:'', checks:{}, drinks:[], stools:[], delStools:[], nextAt:0, stopMobi:false, allDone:false, checkDone:false, noStool:false, callAck:false, curDone:false, baseOK:false, baseCall:'', extraCall:false, extraAck:false, lastWaterInProg:false, code:'', method:'', updatedAt:0 });
 let S = blankState();
 function load(){ try{ const v = localStorage.getItem(KEY); if(v) S = Object.assign(S, JSON.parse(v)); }catch(e){} }
-// β1.6.92：評価版（スタッフ評価）では、仮の番号（EV＋5文字。本番の番号は6文字なので重ならない）で記録を管理アプリへ送る。「デモの記録」として別に表示される
-const evCode = () => 'EV' + Array.from({length:5}, () => 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'[Math.floor(Math.random()*32)]).join('');
 function save(){ if(PRACTICE) return;   // β1.6.35：練習のときは保存も送信もしない
-  if(EVAL && !/^EV[A-Z0-9]{5}$/.test(S.code || '')) S.code = evCode();
   S.updatedAt = Date.now(); try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} }   // 1.9.33：記録を当院へ送る機能はプログラムごと消した（スマホの中にだけ保存）
 // β1.6.33：検査日の翌日からは「検査のあと」の画面だけ（過ごし方・連絡先はずっと、アンケートは検査日から7日まで）
 const SURVEY_DAYS = 7;
@@ -1562,7 +1532,6 @@ function renderSchedule(){
     + `</div>`;
   if(a2hsShowable()) h += `<div style="text-align:center;margin-top:18px"><button type="button" class="linkbtn" id="btnA2hsLink">ホーム画面に追加する</button></div>`;   // β1.6.57
   if(noticeList().length) h += `<div style="text-align:center;margin-top:18px"><button type="button" class="linkbtn" data-go="vNotice">ご利用の前に（注意事項）</button></div>`;   // β1.9.1
-  if(EVAL) h += `<button type="button" class="btn evbig" data-go="vEval">スタッフ評価シートを書く</button>`;   // β1.6.66
   h += themeHTML();   // β1.6.64
   v.innerHTML = h;
 }
@@ -1704,67 +1673,6 @@ async function sendSurvey(){
   }
   S.surveyDone = true; surveyMsg = ''; save(); render('vSurvey', true);
 }
-
-/* ---------- スタッフ評価シート（β1.6.66。?eval=1 のときだけ） ---------- */
-// 評価の項目（案）。5段階：1 よくない 〜 5 とても良い。見ていない項目は「見ていない」
-const EVAL_ITEMS = [
-  { id:'e1', q:'文字の大きさ・読みやすさ' },
-  { id:'e2', q:'言葉や説明の分かりやすさ' },
-  { id:'e3', q:'ボタンの押しやすさ・操作の分かりやすさ' },
-  { id:'e4', q:'見た目（色・デザイン）' },
-  { id:'e5', q:'「検査までの予定」の画面', s:'日付のタブ・チェック・今日に戻る など' },
-  { id:'e6', q:'「前日までに確認してください」', s:'注意事項・下剤内服の流れ' },
-  { id:'e7', q:'飲み方ナビ（モビプレップを飲む画面）', s:'「実際にモビプレップを飲み始めましょう」から' },
-  { id:'e8', q:'トイレの記録（便の色を選ぶ）' },
-  { id:'e9', q:'高齢の患者さんでも使えそうか' },
-  { id:'e10', q:'スタッフの説明の手間が減りそうか' }
-];
-const EVAL_ROLES = ['看護師','受付・事務','医師','その他'];
-const EVAL_TEXT = [
-  { id:'c1', q:'分かりにくかった所・使いにくかった所' },
-  { id:'c2', q:'まちがい・おかしな動き', s:'どの画面で、何をしたときか' },
-  { id:'c3', q:'付け足してほしいこと・そのほか' }
-];
-const EVAL_KEY = 'csguide_eval_draft';
-let EV = (() => { try{ return Object.assign({ role:'', r:{}, c:{}, sent:0 }, JSON.parse(localStorage.getItem(EVAL_KEY) || '{}')); }catch(e){ return { role:'', r:{}, c:{}, sent:0 }; } })();
-let evMsg = '', evDone = false;
-const evSave = () => { try{ localStorage.setItem(EVAL_KEY, JSON.stringify(EV)); }catch(e){} };
-const evReady = () => !!EV.role && (Object.keys(EV.r).length > 0 || EVAL_TEXT.some(x => (EV.c[x.id] || '').trim()));
-function evalHTML(){
-  if(evDone) return `<div class="panel"><p style="margin:0 0 6px;font-size:19px;font-weight:700">送りました。ありがとうございました。</p><p class="muted" style="margin:0">ほかにも気づいたことがあれば、もう一度書いて送ってください（何回でも送れます）。</p></div>`
-    + `<button type="button" class="btn" id="btnEvalAgain">もう一度書く</button>` + backBtn();
-  const rate = x => { const v = EV.r[x.id];
-    return `<div class="panel ev"><div class="evq">${esc(x.q)}${x.s ? `<small>${esc(x.s)}</small>` : ''}</div><div class="evs">`
-      + [1,2,3,4,5].map(n => `<button type="button" data-evr="${x.id}" data-evv="${n}" aria-pressed="${v === n}">${n}</button>`).join('')
-      + `</div><div class="evl"><span>よくない</span><span>とても良い</span></div>`
-      + `<button type="button" class="evna" data-evr="${x.id}" data-evv="0" aria-pressed="${v === 0}">見ていない</button></div>`; };
-  return `<div class="ev">`
-    + `<p>正式に使い始める前に、このアプリを評価してください。患者さんになったつもりで、いろいろな画面を触ってから答えてください。<b>お名前は送られません。</b></p>`
-    + `<div class="note">検査日を「変更」で<b>今日</b>にすると、検査当日の画面と飲み方ナビを試せます。途中で書いた答えはスマホに残るので、触りながら少しずつ書いてもかまいません。</div>`
-    + `<div class="evsec">あなたについて</div><div class="panel ev"><div class="evq">職種</div><div class="evr">`
-    + EVAL_ROLES.map(r => `<button type="button" data-evrole="${esc(r)}" aria-pressed="${EV.role === r}">${esc(r)}</button>`).join('') + `</div></div>`
-    + `<div class="evsec">5段階で評価</div>` + EVAL_ITEMS.map(rate).join('')
-    + `<div class="evsec">気づいたこと（自由に）</div>`
-    + EVAL_TEXT.map(x => `<div class="panel ev"><div class="evq">${esc(x.q)}${x.s ? `<small>${esc(x.s)}</small>` : ''}</div><textarea data-evc="${x.id}" maxlength="1000">${esc(EV.c[x.id] || '')}</textarea></div>`).join('')
-    + (evMsg ? `<p class="evmsg">${esc(evMsg)}</p>` : '')
-    + `<button type="button" class="btn" id="btnEvalSend"${evReady() ? '' : ' disabled'}>${evReady() ? '評価を送る' : (EV.role ? '評価か気づいたことを1つ以上書くと送れます' : '職種を選ぶと送れます')}</button>`
-    + `</div>` + backBtn();
-}
-async function sendEval(){
-  if(!evReady()) return;
-  const ratings = {}; EVAL_ITEMS.forEach(x => { ratings[x.id] = EV.r[x.id] === undefined ? '' : EV.r[x.id]; });
-  const comments = {}; EVAL_TEXT.forEach(x => { comments[x.id] = (EV.c[x.id] || '').trim().slice(0, 1000); });
-  const body = { action:'staffEval', ver:APP_VERSION, role:EV.role, env:a2hsEnv() + (isStandalone() ? '-home' : ''), method:curMethod(), place:S.place || '', ratings, comments };
-  const b = document.getElementById('btnEvalSend'); if(b){ b.disabled = true; b.textContent = '送っています…'; }
-  try{
-    if(!SETTINGS_URL) throw new Error('');
-    const r = await fetch(SETTINGS_URL, { method:'POST', body: JSON.stringify(body) }).then(r => r.json());
-    if(!r.ok) throw new Error(r.error || '');
-  }catch(e){ evMsg = '送れませんでした。電波のよい所で、もう一度「評価を送る」を押してください。' + (e.message ? `（${e.message}）` : ''); return render('vEval', true); }
-  EV = { role:EV.role, r:{}, c:{}, sent:(EV.sent || 0) + 1 }; evSave(); evMsg = ''; evDone = true; render('vEval'); 
-}
-document.addEventListener('input', e => { const t = e.target; if(t && t.dataset && t.dataset.evc){ EV.c[t.dataset.evc] = t.value; evSave();
-  const b = document.getElementById('btnEvalSend'); if(b){ const ok = evReady(); b.disabled = !ok; b.textContent = ok ? '評価を送る' : (EV.role ? '評価か気づいたことを1つ以上書くと送れます' : '職種を選ぶと送れます'); } } });
 
 /* ---------- 検査のあと（検査日の翌日から。β1.6.33） ---------- */
 // β1.6.75：「最初からやり直す」は、試作版（設定の「試作版です」の表示が入っている）のときだけ（β1.6.86：スマホでも出す）
@@ -2265,9 +2173,9 @@ function renderAfter(){
 const backBtn = () => `<button type="button" class="btn sub bottomback" data-back="1">← もどる</button>`;
 
 /* ---------- 画面切り替え（スマホの「戻る」でも戻れる） ---------- */
-const VIEWS = ['vSetup','vSchedule','vFood','vNav','vAfter','vPrep','vRule','vCaution','vCancel','vBefore','vNotice','vSurvey','vEnded','vEval'];
-const HASH  = { vSetup:'setup', vSchedule:'schedule', vFood:'food', vNav:'drink', vAfter:'after', vPrep:'prep', vRule:'rule', vCaution:'caution', vCancel:'cancel', vBefore:'before', vNotice:'notice', vSurvey:'survey', vEnded:'end', vEval:'eval' };
-const TITLE = { vSetup:'はじめに', vSchedule:'検査までの予定', vFood:'食事のこと', vNav:'飲み方ナビ', vAfter:'検査のあと', vPrep:'モビプレップの作り方', vRule:'飲み方のきまり', vCaution:'服用時の注意点', vCancel:'検査の予約について', vBefore:'前日までに確認してください', vNotice:'ご利用の前に', vSurvey:'アプリのアンケート', vEnded:'検査が終わりました', vEval:'スタッフ評価シート' };
+const VIEWS = ['vSetup','vSchedule','vFood','vNav','vAfter','vPrep','vRule','vCaution','vCancel','vBefore','vNotice','vSurvey','vEnded'];
+const HASH  = { vSetup:'setup', vSchedule:'schedule', vFood:'food', vNav:'drink', vAfter:'after', vPrep:'prep', vRule:'rule', vCaution:'caution', vCancel:'cancel', vBefore:'before', vNotice:'notice', vSurvey:'survey', vEnded:'end' };
+const TITLE = { vSetup:'はじめに', vSchedule:'検査までの予定', vFood:'食事のこと', vNav:'飲み方ナビ', vAfter:'検査のあと', vPrep:'モビプレップの作り方', vRule:'飲み方のきまり', vCaution:'服用時の注意点', vCancel:'検査の予約について', vBefore:'前日までに確認してください', vNotice:'ご利用の前に', vSurvey:'アプリのアンケート', vEnded:'検査が終わりました' };
 let current = '';
 const stack = [];          // 戻り先の記録（アプリ内で管理）
 const scrollMem = {};
@@ -2304,7 +2212,6 @@ function render(id, restore){
   if(id === 'vNotice') document.getElementById(id).innerHTML = noticeHTML();
   if(id === 'vSurvey') document.getElementById(id).innerHTML = surveyHTML();
   if(id === 'vEnded') document.getElementById(id).innerHTML = endedHTML();
-  if(id === 'vEval') document.getElementById(id).innerHTML = evalHTML();
   if(id === 'vBefore' && !restore) beforeTab = 'caution';   // 予定の画面から開いたときは①から
   if(id === 'vBefore')  document.getElementById(id).innerHTML = beforeHTML();
   if(id === 'vSetup') renderSetup();
@@ -2411,8 +2318,6 @@ document.addEventListener('click', e => {
     return;
   }
   if(t.dataset.back) return goBack();
-  if(t.dataset.evr){ const v = Number(t.dataset.evv); if(EV.r[t.dataset.evr] === v) delete EV.r[t.dataset.evr]; else EV.r[t.dataset.evr] = v; evSave(); evMsg = ''; return render('vEval', true); }   // β1.6.66
-  if(t.dataset.evrole){ EV.role = t.dataset.evrole; evSave(); evMsg = ''; return render('vEval', true); }
   if(t.dataset.themeSet){ themeSet(t.dataset.themeSet === 'auto' ? '' : t.dataset.themeSet); if(current === 'vSchedule') renderSchedule(); return; }   // β1.6.64
   if(t.dataset.cald){ document.getElementById('inDate').value = t.dataset.cald; document.getElementById('setupErr').textContent = ''; return renderCal(); }
   if(t.dataset.calm) return calMove(Number(t.dataset.calm));
@@ -2431,8 +2336,6 @@ document.addEventListener('click', e => {
   switch(t.id){
     case 'btnPracticeReset': { if(PRACTICE){ closeSheet(); S = newPractice(realS); renderNav(); window.scrollTo(0,0); } return; }
     case 'btnSurveySend': return sendSurvey();
-    case 'btnEvalSend': return sendEval();
-    case 'btnEvalAgain': evDone = false; return render('vEval');
     case 'btnA2hs': case 'btnA2hsLink': return openA2hs();   // β1.6.57
     case 'btnA2hsLater': a2hsSet('later'); return renderSchedule();
     case 'btnNoticeOK': return noticeOK();   // β1.9.1
@@ -2471,7 +2374,7 @@ document.addEventListener('click', e => {
         if(after === 'callExtra') return openCallNotice('extra');
         return openStoolResult(lastLv(), after);
       }
-      if(tooFast) return openTooFast();   // β1.6.69：お試し版・評価版でも出す（スタッフが評価で確かめられるように）
+      if(tooFast) return openTooFast();   // β1.6.69：お試し版でも出す
       return;
     }
     case 'btnUndo':
@@ -2567,12 +2470,6 @@ setInterval(() => { if(document.visibilityState === 'visible' && shownDay && ymd
       const off = document.body.classList.toggle('mk-off');
       e.currentTarget.textContent = off ? '札を出す' : '札を隠す';
     });
-  }
-  if(EVAL){   // β1.6.66：評価版の帯（評価シートへの入口）
-    const dm = document.getElementById('demo'); dm.classList.add('evalbar');
-    dm.querySelector('span').innerHTML = '<b>スタッフ評価版</b>です。ここで押した記録は病院へは送られません。';   // 1.9.32：記録を送る機能を外したので、もとの文にもどした   // β1.9.0：評価版は「デモの記録」として管理アプリに届くので、「送られません」をやめた
-    dm.insertAdjacentHTML('beforeend', '<button type="button" class="evgo" data-go="vEval">評価シート</button>');
-    dm.querySelector('#btnDemoReset').textContent = 'やり直す';
   }
   load();
   const qc = DEMO ? '' : (q.get('c') || '').toUpperCase();   // お試し版では番号を使わない
